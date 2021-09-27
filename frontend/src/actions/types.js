@@ -1,5 +1,7 @@
 export const GET_PRODUCTS = 'GET_PRODUCTS';
-export const GET_PRODUCT = 'GET_PRODUCT';
+export const GET_PRODUCT_DETAIL = 'GET_PRODUCT_DETAIL';
 export const PRODUCT_ERROR = 'PRODUCT_ERROR';
 export const SET_ALERT = 'SET_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
+export const CART_ADD_ITEM = 'CART_ADD_ITEM';
+export const CART_REMOVE_ITEM = 'CART_REMOVE_ITEM';

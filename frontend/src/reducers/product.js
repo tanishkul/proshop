@@ -1,8 +1,12 @@
-import { GET_PRODUCT, GET_PRODUCTS, PRODUCT_ERROR } from '../actions/types';
+import {
+  GET_PRODUCT_DETAIL,
+  GET_PRODUCTS,
+  PRODUCT_ERROR,
+} from '../actions/types';
 
 const initialState = {
   products: [],
-  product: null,
+  product: { reviews: [] },
   loading: true,
   error: null,
 };
@@ -12,7 +16,7 @@ const product = (state = initialState, action) => {
   switch (type) {
     case GET_PRODUCTS:
       return { ...state, products: payload, loading: false };
-    case GET_PRODUCT:
+    case GET_PRODUCT_DETAIL:
       return { ...state, product: payload, loading: false };
     case PRODUCT_ERROR:
       return { ...state, error: payload, loading: false };
