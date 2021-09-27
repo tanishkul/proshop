@@ -4,12 +4,14 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
+// import Alert from './components/Alert';
 
 const App = () => {
   return (
     <Router>
       <Header />
       <main className='py-3'>
+        {/* <Alert /> */}
         <Container>
           <Route exact path='/' component={HomeScreen} />
           <Route path='/product/:id' component={ProductScreen} />
