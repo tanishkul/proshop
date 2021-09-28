@@ -1,7 +1,12 @@
-import { CART_ADD_ITEM, CART_REMOVE_ITEM } from '../actions/types';
+import {
+  CART_ADD_ITEM,
+  CART_REMOVE_ITEM,
+  CART_SAVE_SHIPPING_ADDRESS,
+} from '../actions/types';
 
 const initialState = {
   cartItems: [],
+  shippingAddress: {},
 };
 
 const cart = (state = initialState, action) => {
@@ -25,6 +30,11 @@ const cart = (state = initialState, action) => {
       return {
         ...state,
         cartItems: state.cartItems.filter(item => payload !== item.product),
+      };
+    case CART_SAVE_SHIPPING_ADDRESS:
+      return {
+        ...state,
+        shippingAddress: payload,
       };
     default:
       return state;

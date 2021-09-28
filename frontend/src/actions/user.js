@@ -1,11 +1,15 @@
 import axios from 'axios';
 import { setAlert } from './alert';
 import {
+  USER_DETAILS,
+  USER_DETAILS_ERROR,
   USER_LOGIN,
   USER_LOGIN_ERROR,
   USER_LOGOUT,
   USER_REGISTER,
   USER_REGISTER_ERROR,
+  USER_UPDATE_PROFILE,
+  USER_UPDATE_PROFILE_ERROR,
 } from './types';
 
 export const login = (email, password) => async dispatch => {
@@ -78,6 +82,76 @@ export const register = (name, email, password) => async dispatch => {
   } catch (err) {
     dispatch({
       type: USER_REGISTER_ERROR,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+
+    const errorMessage = err.response && err.response.data.message;
+
+    if (errorMessage) {
+      dispatch(setAlert(errorMessage, 'danger'));
+    }
+  }
+};
+
+export const getUserProfile = id => async (dispatch, getState) => {
+  try {
+    const {
+      user: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/users/${id}`, config);
+
+    dispatch({
+      type: USER_DETAILS,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: USER_DETAILS_ERROR,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+
+    const errorMessage = err.response && err.response.data.message;
+
+    if (errorMessage) {
+      dispatch(setAlert(errorMessage, 'danger'));
+    }
+  }
+};
+
+export const updateUserProfile = user => async (dispatch, getState) => {
+  try {
+    const {
+      user: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(`/api/users/profile`, user, config);
+
+    dispatch({
+      type: USER_UPDATE_PROFILE,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: USER_UPDATE_PROFILE_ERROR,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message
