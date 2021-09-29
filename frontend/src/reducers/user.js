@@ -1,6 +1,7 @@
 import {
   USER_DETAILS,
   USER_DETAILS_ERROR,
+  USER_DETAILS_RESET,
   USER_LOGIN,
   USER_LOGIN_ERROR,
   USER_LOGOUT,
@@ -46,6 +47,15 @@ const user = (state = initialState, action) => {
     case USER_DETAILS_ERROR:
     case USER_UPDATE_PROFILE_ERROR:
       return { ...state, error: payload, loading: false };
+    case USER_DETAILS_RESET:
+      return {
+        ...state,
+        error: null,
+        loading: false,
+        user: null,
+        success: null,
+        userInfo: null,
+      };
     default:
       return state;
   }

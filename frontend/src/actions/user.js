@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { setAlert } from './alert';
 import {
+  GET_MY_ORDER_RESET,
   USER_DETAILS,
   USER_DETAILS_ERROR,
+  USER_DETAILS_RESET,
   USER_LOGIN,
   USER_LOGIN_ERROR,
   USER_LOGOUT,
@@ -52,6 +54,8 @@ export const login = (email, password) => async dispatch => {
 export const logout = () => async dispatch => {
   localStorage.removeItem('userInfo');
   dispatch({ type: USER_LOGOUT });
+  dispatch({ type: USER_DETAILS_RESET });
+  dispatch({ type: GET_MY_ORDER_RESET });
 };
 
 export const register = (name, email, password) => async dispatch => {

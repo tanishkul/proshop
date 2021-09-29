@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { setAlert } from './alert';
 import {
+  GET_MY_ORDER,
+  GET_MY_ORDER_ERROR,
   GET_ORDER_BY_ID,
   GET_ORDER_BY_ID_ERROR,
   ORDER_CREATE_ERROR,
@@ -120,3 +122,38 @@ export const updateOrderToPaid =
       }
     }
   };
+
+export const getMyOrders = () => async (dispatch, getState) => {
+  try {
+    const {
+      user: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/orders/myorders`, config);
+
+    dispatch({
+      type: GET_MY_ORDER,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: GET_MY_ORDER_ERROR,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+
+    const errorMessage = err.response && err.response.data.message;
+
+    if (errorMessage) {
+      dispatch(setAlert(errorMessage, 'danger'));
+    }
+  }
+};
