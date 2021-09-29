@@ -103,7 +103,6 @@ export const getUserProfile = id => async (dispatch, getState) => {
     } = getState();
     const config = {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
