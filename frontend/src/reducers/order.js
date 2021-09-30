@@ -15,6 +15,10 @@ const initialState = {
   loading: true,
   orderItems: [],
   shippingAddress: {},
+  order: null,
+  myOrders: [],
+  success: null,
+  successPay: null,
 };
 
 const order = (state = initialState, action) => {
@@ -54,7 +58,7 @@ const order = (state = initialState, action) => {
         success: null,
         error: null,
         successPay: null,
-        order: null,
+        // order: null,
         myOrders: [],
       };
     default:

@@ -68,7 +68,7 @@ const OrderScreen = ({ match }) => {
     dispatch(updateOrderToPaid(orderId, paymentResult));
   };
 
-  return loading ? (
+  return loading || !order ? (
     <Loader />
   ) : error ? (
     <Message variant='danger'>{error}</Message>

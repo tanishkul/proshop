@@ -24,8 +24,6 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
     }
   } catch (err) {
     console.error(err.message);
-    // res.status(401);
-    // throw new Error('Not authorized- token failed');
     next(err);
   }
 });
