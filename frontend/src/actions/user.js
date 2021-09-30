@@ -2,6 +2,9 @@ import axios from 'axios';
 import { setAlert } from './alert';
 import {
   GET_MY_ORDER_RESET,
+  GET_USERS_LIST,
+  GET_USERS_LIST_ERROR,
+  GET_USERS_LIST_RESET,
   USER_DETAILS,
   USER_DETAILS_ERROR,
   USER_DETAILS_RESET,
@@ -56,6 +59,7 @@ export const logout = () => async dispatch => {
   dispatch({ type: USER_LOGOUT });
   dispatch({ type: USER_DETAILS_RESET });
   dispatch({ type: GET_MY_ORDER_RESET });
+  dispatch({ type: GET_USERS_LIST_RESET });
 };
 
 export const register = (name, email, password) => async dispatch => {
@@ -155,6 +159,40 @@ export const updateUserProfile = user => async (dispatch, getState) => {
   } catch (err) {
     dispatch({
       type: USER_UPDATE_PROFILE_ERROR,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+
+    const errorMessage = err.response && err.response.data.message;
+
+    if (errorMessage) {
+      dispatch(setAlert(errorMessage, 'danger'));
+    }
+  }
+};
+
+export const getAllUsers = () => async (dispatch, getState) => {
+  try {
+    const {
+      user: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/users`, config);
+
+    dispatch({
+      type: GET_USERS_LIST,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: GET_USERS_LIST_ERROR,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message

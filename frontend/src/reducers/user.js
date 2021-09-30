@@ -1,4 +1,7 @@
 import {
+  GET_USERS_LIST,
+  GET_USERS_LIST_ERROR,
+  GET_USERS_LIST_RESET,
   USER_DETAILS,
   USER_DETAILS_ERROR,
   USER_DETAILS_RESET,
@@ -17,6 +20,7 @@ const initialState = {
   error: null,
   userInfo: null,
   user: null,
+  users: [],
 };
 
 const user = (state = initialState, action) => {
@@ -35,6 +39,8 @@ const user = (state = initialState, action) => {
         loading: false,
         error: null,
       };
+    case GET_USERS_LIST:
+      return { ...state, users: payload, loading: false, error: null };
     case USER_UPDATE_PROFILE_RESET:
       return {
         ...state,
@@ -46,6 +52,7 @@ const user = (state = initialState, action) => {
     case USER_REGISTER_ERROR:
     case USER_DETAILS_ERROR:
     case USER_UPDATE_PROFILE_ERROR:
+    case GET_USERS_LIST_ERROR:
       return { ...state, error: payload, loading: false };
     case USER_DETAILS_RESET:
       return {
@@ -55,6 +62,13 @@ const user = (state = initialState, action) => {
         user: null,
         success: null,
         userInfo: null,
+      };
+    case GET_USERS_LIST_RESET:
+      return {
+        ...state,
+        error: null,
+        loading: false,
+        users: [],
       };
     default:
       return state;
