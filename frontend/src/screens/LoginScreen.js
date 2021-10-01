@@ -6,6 +6,7 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
 import { login } from '../actions/user';
+import { USER_LOGIN_RESET } from '../actions/types';
 
 const LoginScreen = ({ location, history }) => {
   const [email, setEmail] = useState('');
@@ -19,10 +20,11 @@ const LoginScreen = ({ location, history }) => {
   const redirect = location.search ? location.search.split('=')[1] : '/';
 
   useEffect(() => {
+    dispatch({ type: USER_LOGIN_RESET });
     if (userInfo) {
       history.push(redirect);
     }
-  }, [history, redirect, userInfo]);
+  }, [dispatch, history, redirect, userInfo]);
 
   const submitHandler = e => {
     e.preventDefault();

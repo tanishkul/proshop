@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { setAlert } from './alert';
 import {
+  DELETE_USER,
+  DELETE_USER_ERROR,
   GET_MY_ORDER_RESET,
   GET_USERS_LIST,
   GET_USERS_LIST_ERROR,
@@ -193,6 +195,41 @@ export const getAllUsers = () => async (dispatch, getState) => {
   } catch (err) {
     dispatch({
       type: GET_USERS_LIST_ERROR,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+
+    const errorMessage = err.response && err.response.data.message;
+
+    if (errorMessage) {
+      dispatch(setAlert(errorMessage, 'danger'));
+    }
+  }
+};
+
+export const deleteUser = id => async (dispatch, getState) => {
+  try {
+    const {
+      user: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    await axios.delete(`/api/users/${id}`, config);
+
+    dispatch({
+      type: DELETE_USER,
+      payload: { id },
+    });
+  } catch (err) {
+    dispatch({
+      type: DELETE_USER_ERROR,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message

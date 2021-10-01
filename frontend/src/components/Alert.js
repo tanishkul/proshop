@@ -7,7 +7,7 @@ const AlertComponent = ({ alerts }) =>
   alerts !== null &&
   alerts.length > 0 &&
   alerts.map(alert => (
-    <Alert variant={`${alert.alertType}`} style={{}}>
+    <Alert variant={alert.alertType ? alert.alertType : 'info'}>
       {alert.msg}
     </Alert>
   ));

@@ -4,13 +4,13 @@ import { Table, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { getAllUsers } from '../actions/user';
+import { deleteUser, getAllUsers } from '../actions/user';
 
 const UserListScreen = ({ history }) => {
   const dispatch = useDispatch();
 
   const userList = useSelector(state => state.user);
-  const { loading, error, users, userInfo } = userList;
+  const { loading, error, users, userInfo, successDelete } = userList;
 
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
@@ -18,9 +18,13 @@ const UserListScreen = ({ history }) => {
     } else {
       history.push('/login');
     }
-  }, [dispatch, history, userInfo]);
+  }, [dispatch, history, userInfo, successDelete]);
 
-  const deleteHandler = id => {};
+  const deleteHandler = id => {
+    if (window.confirm('Are you sure you want to remove this user?')) {
+      dispatch(deleteUser(id));
+    }
+  };
 
   return (
     <>
@@ -64,7 +68,7 @@ const UserListScreen = ({ history }) => {
                   <Button
                     className='btn-sm'
                     variant='danger'
-                    onClick={deleteHandler(user._id)}
+                    onClick={() => deleteHandler(user._id)}
                   >
                     <i className='fas fa-trash'></i>
                   </Button>

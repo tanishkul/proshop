@@ -1,4 +1,6 @@
 import {
+  DELETE_USER,
+  DELETE_USER_ERROR,
   GET_USERS_LIST,
   GET_USERS_LIST_ERROR,
   GET_USERS_LIST_RESET,
@@ -7,6 +9,7 @@ import {
   USER_DETAILS_RESET,
   USER_LOGIN,
   USER_LOGIN_ERROR,
+  USER_LOGIN_RESET,
   USER_LOGOUT,
   USER_REGISTER,
   USER_REGISTER_ERROR,
@@ -41,6 +44,11 @@ const user = (state = initialState, action) => {
       };
     case GET_USERS_LIST:
       return { ...state, users: payload, loading: false, error: null };
+    case DELETE_USER:
+      return {
+        ...state,
+        successDelete: true,
+      };
     case USER_UPDATE_PROFILE_RESET:
       return {
         ...state,
@@ -53,7 +61,10 @@ const user = (state = initialState, action) => {
     case USER_DETAILS_ERROR:
     case USER_UPDATE_PROFILE_ERROR:
     case GET_USERS_LIST_ERROR:
+    case DELETE_USER_ERROR:
       return { ...state, error: payload, loading: false };
+    case USER_LOGIN_RESET:
+      return { ...state, error: null };
     case USER_DETAILS_RESET:
       return {
         ...state,
