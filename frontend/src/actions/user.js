@@ -15,6 +15,8 @@ import {
   USER_LOGOUT,
   USER_REGISTER,
   USER_REGISTER_ERROR,
+  USER_UPDATE,
+  USER_UPDATE_ERROR,
   USER_UPDATE_PROFILE,
   USER_UPDATE_PROFILE_ERROR,
 } from './types';
@@ -230,6 +232,45 @@ export const deleteUser = id => async (dispatch, getState) => {
   } catch (err) {
     dispatch({
       type: DELETE_USER_ERROR,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+
+    const errorMessage = err.response && err.response.data.message;
+
+    if (errorMessage) {
+      dispatch(setAlert(errorMessage, 'danger'));
+    }
+  }
+};
+
+export const updateUser = user => async (dispatch, getState) => {
+  try {
+    const {
+      user: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(`/api/users/${user._id}`, user, config);
+
+    dispatch({
+      type: USER_UPDATE,
+    });
+
+    dispatch({
+      type: USER_DETAILS,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: USER_UPDATE_ERROR,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message

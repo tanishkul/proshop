@@ -13,9 +13,12 @@ import {
   USER_LOGOUT,
   USER_REGISTER,
   USER_REGISTER_ERROR,
+  USER_UPDATE,
+  USER_UPDATE_ERROR,
   USER_UPDATE_PROFILE,
   USER_UPDATE_PROFILE_ERROR,
   USER_UPDATE_PROFILE_RESET,
+  USER_UPDATE_RESET,
 } from '../actions/types';
 
 const initialState = {
@@ -54,6 +57,11 @@ const user = (state = initialState, action) => {
         ...state,
         success: null,
       };
+    case USER_UPDATE:
+      return {
+        ...state,
+        success: true,
+      };
     case USER_LOGOUT:
       return { ...state, userInfo: null, loading: false };
     case USER_LOGIN_ERROR:
@@ -62,9 +70,15 @@ const user = (state = initialState, action) => {
     case USER_UPDATE_PROFILE_ERROR:
     case GET_USERS_LIST_ERROR:
     case DELETE_USER_ERROR:
+    case USER_UPDATE_ERROR:
       return { ...state, error: payload, loading: false };
     case USER_LOGIN_RESET:
       return { ...state, error: null };
+    case USER_UPDATE_RESET:
+      return {
+        ...state,
+        success: null,
+      };
     case USER_DETAILS_RESET:
       return {
         ...state,
