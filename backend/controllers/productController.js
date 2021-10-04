@@ -22,4 +22,83 @@ const getProductById = asyncHandler(async (req, res) => {
   }
 });
 
-export { getProductById, getProducts };
+// @desc    Delete product
+// @route   DELETE /api/products/:id
+// @access  Public/Admin
+const deleteProduct = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (product) {
+    await product.remove();
+    res.json({ message: 'Product removed!' });
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+});
+
+// @desc    Create a product
+// @route   POST /api/products/
+// @access  Public/Admin
+const createProduct = asyncHandler(async (req, res) => {
+  const product = new Product({
+    name: 'Sample product',
+    description: 'Sample product',
+    image: '/images/sample.jpg',
+    price: 0,
+    numReviews: 0,
+    countInStock: 0,
+    user: req.user.id,
+    brand: 'Sample brand',
+    category: 'Sample category',
+  });
+  const createdProduct = await product.save();
+  res.status(201).json(createdProduct);
+});
+
+// @desc    Update a product
+// @route   PUT /api/products/:id
+// @access  Public/Admin
+const updateProduct = asyncHandler(async (req, res) => {
+  const {
+    name,
+    description,
+    image,
+    price,
+    numReviews,
+    countInStock,
+    user,
+    brand,
+    category,
+  } = req.body;
+  const product = await Product.findById(req.params.id);
+  if (product) {
+    const productFields = {};
+    if (name) productFields.name = name;
+    if (description) productFields.description = description;
+    if (image) productFields.image = image;
+    if (price) productFields.price = price;
+    if (numReviews) productFields.numReviews = numReviews;
+    if (countInStock) productFields.countInStock = countInStock;
+    if (user) productFields.user = user;
+    if (brand) productFields.brand = brand;
+    if (category) productFields.category = category;
+
+    const updatedProduct = await Product.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: productFields },
+      { new: true }
+    );
+    res.json(updatedProduct);
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+});
+
+export {
+  getProductById,
+  getProducts,
+  deleteProduct,
+  createProduct,
+  updateProduct,
+};

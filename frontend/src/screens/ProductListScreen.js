@@ -4,7 +4,8 @@ import { Table, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { getProducts } from '../actions/product';
+import { createProduct, deleteProduct, getProducts } from '../actions/product';
+import { CREATE_PRODUCT_RESET } from '../actions/types';
 
 const ProductListScreen = ({ history, match }) => {
   const dispatch = useDispatch();
@@ -13,23 +14,30 @@ const ProductListScreen = ({ history, match }) => {
   const { userInfo } = user;
 
   const productList = useSelector(state => state.products);
-  const { loading, error, products } = productList;
+  const { loading, error, products, success, successCreate, product } =
+    productList;
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(getProducts());
-    } else {
+    dispatch({ type: CREATE_PRODUCT_RESET });
+    if (userInfo && !userInfo.isAdmin) {
       history.push('/login');
     }
-  }, [dispatch, history, userInfo]);
+    if (successCreate) {
+      history.push(`/admin/product/${product._id}/edit`);
+    } else {
+      dispatch(getProducts());
+    }
+  }, [dispatch, history, userInfo, success, successCreate, product]);
 
   const deleteHandler = id => {
-    if (window.confirm('Are you sure you want to remove the user?')) {
-      // Delete products
+    if (window.confirm('Are you sure you want to remove the product?')) {
+      dispatch(deleteProduct(id));
     }
   };
 
-  const createProductHandler = () => {};
+  const createProductHandler = product => {
+    dispatch(createProduct());
+  };
 
   return (
     <>
