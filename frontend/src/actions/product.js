@@ -8,6 +8,8 @@ import {
   GET_PRODUCTS,
   GET_PRODUCT_DETAIL,
   PRODUCT_ERROR,
+  UPDATE_PRODUCT,
+  UPDATE_PRODUCT_ERROR,
 } from './types';
 
 export const getProducts = () => async dispatch => {
@@ -103,6 +105,38 @@ export const createProduct = product => async (dispatch, getState) => {
   } catch (err) {
     dispatch({
       type: CREATE_PRODUCT_ERROR,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+    const errorMessage = err.response && err.response.data.message;
+    if (errorMessage) {
+      dispatch(setAlert(errorMessage, 'danger'));
+    }
+  }
+};
+
+export const updateProduct = product => async (dispatch, getState) => {
+  try {
+    const {
+      user: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(`/api/products/${product._id}`, product, config);
+    dispatch({
+      type: UPDATE_PRODUCT,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: UPDATE_PRODUCT_ERROR,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message

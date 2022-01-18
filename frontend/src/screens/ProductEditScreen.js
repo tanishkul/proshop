@@ -5,7 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
-import { getProductDetail } from '../actions/product';
+import { getProductDetail, updateProduct } from '../actions/product';
+import { UPDATE_PRODUCT_RESET } from '../actions/types';
+import axios from 'axios';
 
 const ProductEditScreen = ({ match, history }) => {
   const productId = match.params.id;
@@ -16,30 +18,67 @@ const ProductEditScreen = ({ match, history }) => {
   const [category, setCategory] = useState('');
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   const dispatch = useDispatch();
 
   const productDetail = useSelector(state => state.products);
-  const { loading, error, product } = productDetail;
+  const { loading, error, product, successUpdate } = productDetail;
 
   useEffect(() => {
-    if (!product || !product.name || product._id !== productId) {
-      dispatch(getProductDetail(productId));
+    if (successUpdate) {
+      dispatch({ type: UPDATE_PRODUCT_RESET });
+      history.push('/admin/productlist');
     } else {
-      setName(product.name);
-      setPrice(product.price);
-      setImage(product.image);
-      setBrand(product.brand);
-      setCategory(product.category);
-      setCountInStock(product.countInStock);
-      setDescription(product.description);
+      if (!product || !product.name || product._id !== productId) {
+        dispatch(getProductDetail(productId));
+      } else {
+        setName(product.name);
+        setPrice(product.price);
+        setImage(product.image);
+        setBrand(product.brand);
+        setCategory(product.category);
+        setCountInStock(product.countInStock);
+        setDescription(product.description);
+      }
     }
-  }, [dispatch, history, product, productId]);
+  }, [dispatch, history, product, productId, successUpdate]);
 
   const submitHandler = e => {
     e.preventDefault();
-    // update
+    dispatch(updateProduct({
+      _id: productId,
+      name,
+      price,
+      image,
+      brand,
+      category,
+      description,
+      countInStock
+    }))
   };
+
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('image', file);
+    setUploading(true);
+
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      };
+      const { data } = await axios.post('/api/upload', formData, config);
+
+      setImage(data);
+    } catch (error) {
+      console.log('error occurred', error);
+    } finally {
+      setUploading(false);
+    }
+  }
 
   return (
     <>
@@ -82,6 +121,14 @@ const ProductEditScreen = ({ match, history }) => {
                 value={image}
                 onChange={e => setImage(e.target.value)}
               ></Form.Control>
+              <Form.File
+                id='image-file'
+                label='Choose File'
+                custom
+                onChange={uploadFileHandler}
+              >
+                {uploading && <Loader />}
+              </Form.File>
             </Form.Group>
 
             <Form.Group controlId='brand'>
