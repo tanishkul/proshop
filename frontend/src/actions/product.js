@@ -3,6 +3,8 @@ import { setAlert } from './alert';
 import {
   CREATE_PRODUCT,
   CREATE_PRODUCT_ERROR,
+  CREATE_PRODUCT_REVIEW,
+  CREATE_PRODUCT_REVIEW_ERROR,
   DELETE_PRODUCT,
   DELETE_PRODUCT_ERROR,
   GET_PRODUCTS,
@@ -137,6 +139,37 @@ export const updateProduct = product => async (dispatch, getState) => {
   } catch (err) {
     dispatch({
       type: UPDATE_PRODUCT_ERROR,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+    const errorMessage = err.response && err.response.data.message;
+    if (errorMessage) {
+      dispatch(setAlert(errorMessage, 'danger'));
+    }
+  }
+};
+
+export const createProductReview = (productId, review) => async (dispatch, getState) => {
+  try {
+    const {
+      user: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    await axios.post(`/api/products/${productId}/reviews`, review, config);
+    dispatch({
+      type: CREATE_PRODUCT_REVIEW,
+    });
+  } catch (err) {
+    dispatch({
+      type: CREATE_PRODUCT_REVIEW_ERROR,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message

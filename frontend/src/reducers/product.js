@@ -9,7 +9,10 @@ import {
   CREATE_PRODUCT_RESET,
   UPDATE_PRODUCT,
   UPDATE_PRODUCT_ERROR,
-  UPDATE_PRODUCT_RESET
+  UPDATE_PRODUCT_RESET,
+  CREATE_PRODUCT_REVIEW,
+  CREATE_PRODUCT_REVIEW_ERROR,
+  CREATE_PRODUCT_REVIEW_RESET
 } from '../actions/types';
 
 const initialState = {
@@ -42,13 +45,23 @@ const product = (state = initialState, action) => {
         loading: false,
         successUpdate: true,
       };
+    case CREATE_PRODUCT_REVIEW:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        errorReview: null
+      };
     case PRODUCT_ERROR:
     case DELETE_PRODUCT_ERROR:
     case CREATE_PRODUCT_ERROR:
     case UPDATE_PRODUCT_ERROR:
-      return { ...state, error: payload, loading: false };
+    case CREATE_PRODUCT_REVIEW_ERROR:
+      return { ...state, errorReview: payload, loading: false };
     case CREATE_PRODUCT_RESET:
       return { ...state, successCreate: null };
+    case CREATE_PRODUCT_REVIEW_RESET:
+      return { ...state, success: null, errorReview: null };
     case UPDATE_PRODUCT_RESET:
       return { ...state, successUpdate: null };
     default:
