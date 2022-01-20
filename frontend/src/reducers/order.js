@@ -8,6 +8,9 @@ import {
   GET_ORDER_BY_ID_ERROR,
   ORDER_CREATE_ERROR,
   ORDER_CREATE_SUCCESS,
+  UPDATE_ORDER_TO_DELIVERED,
+  UPDATE_ORDER_TO_DELIVERED_ERROR,
+  UPDATE_ORDER_TO_DELIVERED_RESET,
   UPDATE_ORDER_TO_PAID,
   UPDATE_ORDER_TO_PAID_ERROR,
   UPDATE_ORDER_TO_PAID_RESET,
@@ -36,8 +39,11 @@ const order = (state = initialState, action) => {
       return { ...state, loading: false, orders: payload };
     case UPDATE_ORDER_TO_PAID:
       return { ...state, loading: false, successPay: true };
+    case UPDATE_ORDER_TO_DELIVERED:
+      return { ...state, loading: false, success: true };
     case ORDER_CREATE_ERROR:
     case UPDATE_ORDER_TO_PAID_ERROR:
+    case UPDATE_ORDER_TO_DELIVERED_ERROR:
     case GET_ORDER_BY_ID_ERROR:
     case GET_MY_ORDER_ERROR:
     case GET_ORDERS_ERROR:
@@ -51,6 +57,7 @@ const order = (state = initialState, action) => {
         myOrders: null
       };
     case UPDATE_ORDER_TO_PAID_RESET:
+    case UPDATE_ORDER_TO_DELIVERED_RESET:
       return {
         ...state,
         loading: false,

@@ -7,16 +7,17 @@ import {
   ListGroup,
   Card,
   ListGroupItem,
+  Button,
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PayPalButton } from 'react-paypal-button-v2';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { getOrderById, updateOrderToPaid } from '../actions/order';
+import { getOrderById, updateOrderToPaid, updateOrderToDelivered } from '../actions/order';
 import axios from 'axios';
-import { UPDATE_ORDER_TO_PAID_RESET } from '../actions/types';
+import { UPDATE_ORDER_TO_DELIVERED_RESET, UPDATE_ORDER_TO_PAID_RESET } from '../actions/types';
 
-const OrderScreen = ({ match }) => {
+const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id;
 
   const [sdkReady, setSdkReady] = useState(false);
@@ -24,7 +25,10 @@ const OrderScreen = ({ match }) => {
   const dispatch = useDispatch();
 
   const orderDetails = useSelector(state => state.order);
-  const { order, loading, error, successPay } = orderDetails;
+  const { order, loading, error, successPay, success } = orderDetails;
+
+  const userLogin = useSelector(state => state.user);
+  const { userInfo } = userLogin;
 
   if (!loading && order) {
     const addDecimals = num => {
@@ -40,6 +44,9 @@ const OrderScreen = ({ match }) => {
   }
 
   useEffect(() => {
+    if(!userInfo) {
+      history.push('/login');
+    }
     const addPayPalScript = async () => {
       const { data: clientId } = await axios.get('/api/config/paypal');
       const script = document.createElement('script');
@@ -52,8 +59,9 @@ const OrderScreen = ({ match }) => {
       document.body.appendChild(script);
     };
 
-    if (!order || order._id !== orderId || successPay) {
+    if (!order || order._id !== orderId || successPay || success) {
       dispatch({ type: UPDATE_ORDER_TO_PAID_RESET });
+      dispatch({ type: UPDATE_ORDER_TO_DELIVERED_RESET });
       dispatch(getOrderById(orderId));
     } else if (!order.isPaid) {
       if (!window.paypal) {
@@ -62,11 +70,15 @@ const OrderScreen = ({ match }) => {
         setSdkReady(true);
       }
     }
-  }, [dispatch, orderId, successPay, order]);
+  }, [dispatch, orderId, successPay, order, success, userInfo, history]);
 
   const successPaymentHandler = paymentResult => {
     dispatch(updateOrderToPaid(orderId, paymentResult));
   };
+
+  const deliverHandler = () => {
+    dispatch(updateOrderToDelivered(order));
+  }
 
   return loading || !order ? (
     <Loader />
@@ -189,6 +201,15 @@ const OrderScreen = ({ match }) => {
                     />
                   )}
                 </ListGroupItem>
+              )}
+              {userInfo?.isAdmin && order.isPaid && !order.isDelivered && (
+                <Button
+                  type='button'
+                  className='btn btn-block'
+                  onClick={deliverHandler}
+                >
+                  Mark as Delivered
+                </Button>
               )}
             </ListGroup>
           </Card>

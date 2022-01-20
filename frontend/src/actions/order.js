@@ -9,6 +9,8 @@ import {
   GET_ORDER_BY_ID_ERROR,
   ORDER_CREATE_ERROR,
   ORDER_CREATE_SUCCESS,
+  UPDATE_ORDER_TO_DELIVERED,
+  UPDATE_ORDER_TO_DELIVERED_ERROR,
   UPDATE_ORDER_TO_PAID,
   UPDATE_ORDER_TO_PAID_ERROR,
 } from './types';
@@ -194,3 +196,43 @@ export const getOrders = () => async (dispatch, getState) => {
     }
   }
 };
+
+export const updateOrderToDelivered =
+  (order) => async (dispatch, getState) => {
+    try {
+      const {
+        user: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await axios.put(
+        `/api/orders/${order._id}/deliver`,
+        {},
+        config
+      );
+
+      dispatch({
+        type: UPDATE_ORDER_TO_DELIVERED,
+        payload: data,
+      });
+    } catch (err) {
+      dispatch({
+        type: UPDATE_ORDER_TO_DELIVERED_ERROR,
+        payload:
+          err.response && err.response.data.message
+            ? err.response.data.message
+            : err.message,
+      });
+
+      const errorMessage = err.response && err.response.data.message;
+
+      if (errorMessage) {
+        dispatch(setAlert(errorMessage, 'danger'));
+      }
+    }
+  };
