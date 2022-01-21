@@ -26,7 +26,7 @@ const product = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
     case GET_PRODUCTS:
-      return { ...state, products: payload, loading: false };
+      return { ...state, products: payload.products, loading: false, pages: payload.pages, page: payload.page };
     case DELETE_PRODUCT:
       return { ...state, success: true };
     case GET_PRODUCT_DETAIL:

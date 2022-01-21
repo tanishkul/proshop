@@ -14,9 +14,9 @@ import {
   UPDATE_PRODUCT_ERROR,
 } from './types';
 
-export const getProducts = (keyword = '') => async dispatch => {
+export const getProducts = (keyword = '', pageNumber = '') => async dispatch => {
   try {
-    const { data } = await axios.get(`/api/products/?keyword=${keyword}`);
+    const { data } = await axios.get(`/api/products/?keyword=${keyword}&pageNumber=${pageNumber}`);
     dispatch({
       type: GET_PRODUCTS,
       payload: data,
