@@ -9,6 +9,8 @@ import {
   DELETE_PRODUCT_ERROR,
   GET_PRODUCTS,
   GET_PRODUCT_DETAIL,
+  GET_TOP_PRODUCT,
+  GET_TOP_PRODUCT_ERROR,
   PRODUCT_ERROR,
   UPDATE_PRODUCT,
   UPDATE_PRODUCT_ERROR,
@@ -24,6 +26,28 @@ export const getProducts = (keyword = '', pageNumber = '') => async dispatch => 
   } catch (err) {
     dispatch({
       type: PRODUCT_ERROR,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+    const errorMessage = err.response && err.response.data.message;
+    if (errorMessage) {
+      dispatch(setAlert(errorMessage, 'danger'));
+    }
+  }
+};
+
+export const getTopProducts = () => async dispatch => {
+  try {
+    const { data } = await axios.get(`/api/products/top`);
+    dispatch({
+      type: GET_TOP_PRODUCT,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: GET_TOP_PRODUCT_ERROR,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message

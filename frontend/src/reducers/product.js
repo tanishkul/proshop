@@ -12,7 +12,9 @@ import {
   UPDATE_PRODUCT_RESET,
   CREATE_PRODUCT_REVIEW,
   CREATE_PRODUCT_REVIEW_ERROR,
-  CREATE_PRODUCT_REVIEW_RESET
+  CREATE_PRODUCT_REVIEW_RESET,
+  GET_TOP_PRODUCT,
+  GET_TOP_PRODUCT_ERROR
 } from '../actions/types';
 
 const initialState = {
@@ -27,6 +29,8 @@ const product = (state = initialState, action) => {
   switch (type) {
     case GET_PRODUCTS:
       return { ...state, products: payload.products, loading: false, pages: payload.pages, page: payload.page };
+    case GET_TOP_PRODUCT:
+      return { ...state, topProducts: payload, loading: false };
     case DELETE_PRODUCT:
       return { ...state, success: true };
     case GET_PRODUCT_DETAIL:
@@ -56,6 +60,8 @@ const product = (state = initialState, action) => {
     case DELETE_PRODUCT_ERROR:
     case CREATE_PRODUCT_ERROR:
     case UPDATE_PRODUCT_ERROR:
+    case GET_TOP_PRODUCT_ERROR:
+      return { ...state, error: payload, loading: false };
     case CREATE_PRODUCT_REVIEW_ERROR:
       return { ...state, errorReview: payload, loading: false };
     case CREATE_PRODUCT_RESET:
