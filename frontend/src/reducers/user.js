@@ -40,7 +40,7 @@ const user = (state = initialState, action) => {
     case USER_UPDATE_PROFILE:
       return {
         ...state,
-        success: true,
+        successUserUpdate: true,
         userInfo: payload,
         loading: false,
         error: null,
@@ -55,7 +55,8 @@ const user = (state = initialState, action) => {
     case USER_UPDATE_PROFILE_RESET:
       return {
         ...state,
-        success: null,
+        successUserUpdate: null,
+        user: null
       };
     case USER_UPDATE:
       return {

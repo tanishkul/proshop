@@ -142,49 +142,47 @@ const ProductScreen = ({ history, match }) => {
             <Col md={6}>
               <h2>Reviews</h2>
               {errorReview && <Message variant='danger'>{errorReview}</Message>}
-              {
-                product.reviews.length === 0 ? <Message>No reviews</Message> :
-                  <ListGroup variant='flush'>
-                    {
-                      product.reviews.map(review => (
-                        <ListGroupItem key={review._id}>
-                          <strong>{review.name}</strong>
-                          <Rating value={review.rating}></Rating>
-                          <p>{review.createdAt.substring(0, 10)}</p>
-                          <p>{review.comment}</p>
-                        </ListGroupItem>
-                      ))
-                    }
-                    <ListGroupItem>
-                      <h2>Write a customer review</h2>
-                      {userInfo ? (<Form onSubmit={submitHandler}>
-                        <FormGroup controlId='rating'>
-                          <FormLabel>
-                            Rating
-                          </FormLabel>
-                          <FormControl as='select' value={rating} onChange={e => setRating(e.target.value)}>
-                            <option value=''>Select...</option>
-                            <option value='1'>1 - Poor</option>
-                            <option value='2'>2 - Fair</option>
-                            <option value='3'>3 - Good</option>
-                            <option value='4'>4 - Very Good</option>
-                            <option value='5'>5 - Excellent</option>
-                          </FormControl>
-                        </FormGroup>
-                        <FormGroup controlId='comment'>
-                          <FormLabel>
-                            Comment
-                          </FormLabel>
-                          <FormControl row='3' as='textarea' value={comment} onChange={e => setComment(e.target.value)}>
-                          </FormControl>
-                        </FormGroup>
-                        <Button type='submit' variant='primary'>
-                          Submit
-                        </Button>
-                      </Form>) : <Message>Please <Link to='/login'> sign in</Link>to write a review.</Message>}
+              {product.reviews.length === 0 && <Message>No Reviews</Message>}
+              <ListGroup variant='flush'>
+                {
+                  product.reviews.map(review => (
+                    <ListGroupItem key={review._id}>
+                      <strong>{review.name}</strong>
+                      <Rating value={review.rating}></Rating>
+                      <p>{review.createdAt.substring(0, 10)}</p>
+                      <p>{review.comment}</p>
                     </ListGroupItem>
-                  </ListGroup>
-              }
+                  ))
+                }
+                <ListGroupItem>
+                  <h2>Write a customer review</h2>
+                  {userInfo ? (<Form onSubmit={submitHandler}>
+                    <FormGroup controlId='rating'>
+                      <FormLabel>
+                        Rating
+                      </FormLabel>
+                      <FormControl as='select' value={rating} onChange={e => setRating(e.target.value)}>
+                        <option value=''>Select...</option>
+                        <option value='1'>1 - Poor</option>
+                        <option value='2'>2 - Fair</option>
+                        <option value='3'>3 - Good</option>
+                        <option value='4'>4 - Very Good</option>
+                        <option value='5'>5 - Excellent</option>
+                      </FormControl>
+                    </FormGroup>
+                    <FormGroup controlId='comment'>
+                      <FormLabel>
+                        Comment
+                      </FormLabel>
+                      <FormControl row='3' as='textarea' value={comment} onChange={e => setComment(e.target.value)}>
+                      </FormControl>
+                    </FormGroup>
+                    <Button type='submit' variant='primary'>
+                      Submit
+                    </Button>
+                  </Form>) : <Message>Please <Link to='/login'> sign in</Link>to write a review.</Message>}
+                </ListGroupItem>
+              </ListGroup>
             </Col>
           </Row>
         </>

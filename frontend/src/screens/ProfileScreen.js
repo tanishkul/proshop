@@ -18,7 +18,7 @@ const ProfileScreen = ({ location, history }) => {
   const dispatch = useDispatch();
 
   const userDetails = useSelector(state => state.user);
-  const { loading, error, user, userInfo, success } = userDetails;
+  const { loading, error, user, userInfo, successUserUpdate } = userDetails;
 
   const myOrderList = useSelector(state => state.order);
   const { loading: loadingOrders, error: errorOrders, myOrders } = myOrderList;
@@ -27,7 +27,7 @@ const ProfileScreen = ({ location, history }) => {
     if (!userInfo) {
       history.push('/login');
     } else {
-      if (!user || !user.name) {
+      if (!user || !user.name || successUserUpdate) {
         dispatch({ type: USER_UPDATE_PROFILE_RESET });
         dispatch(getUserProfile('profile'));
         dispatch(getMyOrders());
@@ -36,7 +36,7 @@ const ProfileScreen = ({ location, history }) => {
         setEmail(userInfo.email);
       }
     }
-  }, [dispatch, history, userInfo, user, success]);
+  }, [dispatch, history, userInfo, user, successUserUpdate]);
 
   const submitHandler = e => {
     e.preventDefault();
@@ -54,7 +54,7 @@ const ProfileScreen = ({ location, history }) => {
         <h2>User Profile</h2>
         {message && <Message variant='danger'>{message}</Message>}
         {error && <Message variant='danger'>{error}</Message>}
-        {success && <Message variant='success'>Profile Updated</Message>}
+        {successUserUpdate && <Message variant='success'>Profile Updated</Message>}
         {loading && <Loader />}
         <Form onSubmit={submitHandler}>
           <Form.Group controlId='name'>
